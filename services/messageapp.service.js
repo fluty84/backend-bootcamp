@@ -6,14 +6,10 @@ class MessageAppService {
             baseURL: "http://messageapp:3000",
         })
     }
-    createMessage = (destination, body) => {
-      
-        return this.api.post('/message', {destination, body})
-    }
 
-    saveMessage = (destination, message) => {
-
-        return this.api.post('/messages', { destination, message })
+    saveMessage = (destination, body) => {
+    console.log(destination, body, "new")
+        return this.api.post('/message', { destination, body })
     }
 
 }
