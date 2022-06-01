@@ -17,15 +17,15 @@ router.post("/", (req, res) => {
         .saveMessage(destination, body)
         .then(response => res.json(response.data))
         .catch(err => {
-            console.log(err.config)
+            
             if(!err.config.data.includes("destination") && !err.config.data.includes("body") ){
-               return res.status(405).json({message:"Need destination & message keys"})
+               return res.status(427).json({message:"Need destination & message keys"})
             }
             if(!err.config.data.includes("destination")){
-               return res.status(406).json({message:"Need destination key"})
+               return res.status(428).json({message:"Need destination key"})
             }
             if(!err.config.data.includes("body")){
-               return res.status(407).json({message:"Need message key"})
+               return res.status(429).json({message:"Need message key"})
             }
 
             if(err.message.includes("code 500")){
