@@ -33,22 +33,48 @@ router.post("/", (req, res) => {
 
 
     MessageAppService
-        .saveMessage(destination, body)
+        .sendMessage(destination, body)
         .then(response => {
             const status = response.status === 200 && response.data === "OK"
-            status ?  "Message Sent" : "Message not sent" 
-            return MessageDB.create({ destination, message:body, number:parseInt(number), status})
+            status ? "Message Sent" : "Message not sent"
+            return MessageDB.create({ destination, message: body, number: parseInt(number), status })
         })
         .then(response => res.json(response))
         .catch(err => {
-            
-            if(err.status === 504){
-              return  MessageDB.create({ destination, message: body, number: parseInt(number), status:"Message not sent", confirmed:false})
+            console.log(err)
+            if (err.response.status === 504) {
+                return MessageDB
+                    .create({ 
+                        destination, 
+                        message: body, 
+                        number: parseInt(number), 
+                        status: "Message Sent", 
+                        confirmed: false })
+                    .then(response => res.json(response))
             }
 
-            MessageDB.create({ sent: "Message not sent"})
+            if (err.message.includes("code 500")) {
 
-                    
+                MessageDB
+                    .create({
+                        destination,
+                        message: body,
+                        number: parseInt(number),
+                        sent: "Message not sent",
+                        confirmed: false
+                    })
+                    .then(response => res.json(response))
+                
+            } else {
+
+            res.json(err)
+
+            }
+
+            
+
+
+
             // if (!err.config?.data.includes("destination") && !err.config?.data.includes("body")) {
             //     return res.status(400).json({ message: "Need destination & message keys" })
             // }
@@ -58,8 +84,8 @@ router.post("/", (req, res) => {
             // if (!err.config?.data.includes("body")) {
             //     return res.status(400).json({ message: "Need message key string" })
             // }
-            
-            
+
+
         })
 })
 
