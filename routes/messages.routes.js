@@ -16,7 +16,7 @@ router.post("/", (req, res) => {
     if (!destination && !body) {
         return res.status(400).json({ message: "Need destination & message keys" })
     }
-    if (typeof destination !== "string" || typeof body !== "string"){
+    if (destination && typeof destination !== "string" || body && typeof body !== "string"){
         return res.status(400).json({message: "values only can be strings"})
     }
     if(!destination){
