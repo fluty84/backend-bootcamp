@@ -36,16 +36,18 @@ router.post("/", (req, res) => {
         .saveMessage(destination, body)
         .then(response => {
             const status = response.status === 200 && response.data === "OK"
-            status ? sent = "Message Sent" : "Message not sent" 
+            status ?  "Message Sent" : "Message not sent" 
             return MessageDB.create({ destination, message:body, number:parseInt(number), status})
         })
         .then(response => res.json(response))
         .catch(err => {
+            
+            if(err.status === 504){
+              return  MessageDB.create({ destination, message: body, number: parseInt(number), status:"Message not sent", confirmed:false})
+            }
+
             MessageDB.create({ sent: "Message not sent"})
 
-            if(err.status === 504){
-                MessageDB.create({confirmed:false})
-            }
                     
             // if (!err.config?.data.includes("destination") && !err.config?.data.includes("body")) {
             //     return res.status(400).json({ message: "Need destination & message keys" })
