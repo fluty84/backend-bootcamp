@@ -13,6 +13,17 @@ router.post("/", (req, res) => {
 
     const body = message
 
+    if (!destination && !body) {
+        return res.status(411).json({ message: "Need destination & message keys" })
+    }
+    if(!destination){
+        return res.status(406).json({ message: "Need destination key" })
+    }
+    if(!body){
+        return res.status(406).json({ message: "Need message key" })
+    }
+
+
     MessageAppService
         .saveMessage(destination, body)
         .then(response => res.json(response.data))
@@ -30,12 +41,13 @@ router.post("/", (req, res) => {
 
             if(err.message.includes("code 500")){
                 return res.status(500).json({message:"Temporal Server Error"})
+            } else {
+                return err
             }
-            else{
-
-            res.status(400).json(err)
-        }
+    
         })
+    
+       
 
 })
 
