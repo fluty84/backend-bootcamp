@@ -71,21 +71,6 @@ router.post("/", (req, res) => {
 
             }
 
-            
-
-
-
-            // if (!err.config?.data.includes("destination") && !err.config?.data.includes("body")) {
-            //     return res.status(400).json({ message: "Need destination & message keys" })
-            // }
-            // if (!err.config?.data.includes("destination")) {
-            //     return res.status(400).json({ message: "Need destination key string" })
-            // }
-            // if (!err.config?.data.includes("body")) {
-            //     return res.status(400).json({ message: "Need message key string" })
-            // }
-
-
         })
 })
 
