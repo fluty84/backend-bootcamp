@@ -8,7 +8,8 @@ class MessageAppService {
     }
 
     saveMessage = (destination, body) => {
-    console.log(destination, body, "new")
+        console.log('destination:',destination, 'body:', body)
+
         return this.api.post('/message', { destination, body })
     }
 
