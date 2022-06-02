@@ -9,9 +9,9 @@
   - destination:String
   - message:String
   - number:String
-  - status:Boolean => becomes true when everithing is ok
-  - sent:String
-  - confirmed:Boolean
+  - status:Boolean => becomes true when everything is ok
+  - sent:Enum => can be "Message Sent" or "Message not sent"
+  - confirmed:Boolean => becomes true when getting a response from messageapp
 
 ### Express endpoint table
 

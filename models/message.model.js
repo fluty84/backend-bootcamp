@@ -14,8 +14,14 @@ const messageSchema = new Schema(
             type: Number,
            
         },
+        
         status: Boolean,
-        sent: "string", 
+        
+        sent: {
+            type:"string", 
+            enum: ["Message Sent", "Message not sent"],
+            default: "Message not sent" 
+        }, 
         confirmed: Boolean
     },
     {
