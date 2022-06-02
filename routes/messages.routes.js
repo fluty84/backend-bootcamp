@@ -19,13 +19,13 @@ router.post("/", (req, res) => {
         .catch(err => {
             
             if(!err.config.data.includes("destination") && !err.config.data.includes("body") ){
-               return res.status(427).json({message:"Need destination & message keys"})
+               return res.status(411).json({message:"Need destination & message keys"})
             }
             if(!err.config.data.includes("destination")){
-               return res.status(428).json({message:"Need destination key"})
+               return res.status(406).json({message:"Need destination key"})
             }
             if(!err.config.data.includes("body")){
-               return res.status(429).json({message:"Need message key"})
+               return res.status(406).json({message:"Need message key"})
             }
 
             if(err.message.includes("code 500")){
@@ -33,7 +33,7 @@ router.post("/", (req, res) => {
             }
             else{
 
-            res.status(450).json(err)
+            res.status(400).json(err)
         }
         })
 
