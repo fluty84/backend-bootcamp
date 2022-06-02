@@ -63,7 +63,7 @@ router.post("/", (req, res) => {
                         sent: "Message not sent",
                         confirmed: false
                     })
-                    .then(response => res.json(response))
+                    .then(response => res.status(500).json(response.sent))
                 
             } else {
 
