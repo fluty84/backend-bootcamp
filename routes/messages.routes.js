@@ -4,7 +4,11 @@ const MessageDB = require('./../models/message.model')
 
 router.get("/", (req, res) => {
 
-    res.json("Hello world")
+    MessageDB
+        .find()
+        .then(messages => res.json(messages))
+        .catch(err => res.json(err))
+
 })
 
 
@@ -31,13 +35,18 @@ router.post("/", (req, res) => {
     MessageAppService
         .saveMessage(destination, body)
         .then(response => {
-            console.log(response.data,"dataaa responseeee")
-            return MessageDB.create({ destination, message:body, number:parseInt(number)})
+            const status = response.status === 200 && response.data === "OK"
+            status ? sent = "Message Sent" : "Message not sent" 
+            return MessageDB.create({ destination, message:body, number:parseInt(number), status})
         })
         .then(response => res.json(response))
         .catch(err => {
-            console.log(err, "errror loggggg.--------------------")
-            res.json(err)
+            MessageDB.create({ sent: "Message not sent"})
+
+            if(err.status === 504){
+                MessageDB.create({confirmed:false})
+            }
+                    
             // if (!err.config?.data.includes("destination") && !err.config?.data.includes("body")) {
             //     return res.status(400).json({ message: "Need destination & message keys" })
             // }
@@ -47,14 +56,11 @@ router.post("/", (req, res) => {
             // if (!err.config?.data.includes("body")) {
             //     return res.status(400).json({ message: "Need message key string" })
             // }
-            // if (err.message?.includes("code 500")) {
-            //     return res.status(500).json({ message: "Temporal Server Error" })
-            // } else {
-             //   return err
+            
             
         })
-
 })
+
 
 
 module.exports = router;

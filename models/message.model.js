@@ -4,16 +4,19 @@ const messageSchema = new Schema(
     {
         destination: {
             type: String,
-            required: true
+            
         },
         message: {
             type: String,
-            required: true
+            
         },
         number: {
             type: Number,
-            required: false
-        }
+           
+        },
+        status: Boolean,
+        sent: "string", 
+        confirmed: Boolean
     },
     {
         timestamps: true,
