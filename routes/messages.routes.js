@@ -16,6 +16,9 @@ router.post("/", (req, res) => {
     if (!destination && !body) {
         return res.status(400).json({ message: "Need destination & message keys" })
     }
+    if (typeof destination !== "string" || typeof body !== "string"){
+        return res.status(400).json({message: "values only can be strings"})
+    }
     if(!destination){
         return res.status(400).json({ message: "Need destination key" })
     }
@@ -33,10 +36,10 @@ router.post("/", (req, res) => {
                return res.status(400).json({message:"Need destination & message keys"})
             }
             if(!err.config.data.includes("destination")){
-               return res.status(400).json({message:"Need destination key"})
+               return res.status(400).json({message:"Need destination key string"})
             }
             if(!err.config.data.includes("body")){
-               return res.status(400).json({message:"Need message key"})
+               return res.status(400).json({message:"Need message key string"})
             }
             if(err.message.includes("code 500")){
                 return res.status(500).json({message:"Temporal Server Error"})
