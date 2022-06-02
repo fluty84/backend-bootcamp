@@ -35,9 +35,10 @@ router.post("/", (req, res) => {
     MessageAppService
         .sendMessage(destination, body)
         .then(response => {
+            const sent = ""
             const status = response.status === 200 && response.data === "OK"
-            status ? "Message Sent" : "Message not sent"
-            return MessageDB.create({ destination, message: body, number: parseInt(number), status })
+            status ? sent = "Message Sent" : sent = "Message not sent"
+            return MessageDB.create({ destination, message: body, number: parseInt(number), status, sent })
         })
         .then(response => res.json(response))
         .catch(err => {

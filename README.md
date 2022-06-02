@@ -3,6 +3,16 @@
 
 ## Contract 
 
+### Models
+- MESSAGE: 
+     
+  - destination:String
+  - message:String
+  - number:String
+  - status:Boolean => becomes true when everithing is ok
+  - sent:String
+  - confirmed:Boolean
+
 ### Express endpoint table
 
 - /messages 
