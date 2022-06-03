@@ -7,15 +7,27 @@ services:
       - "3000"
     ports:
       - "3000:3000"
+
+  mongodb:
+    image: "mongo:5.0.8-focal"
+    volumes:
+      - ./data/db:/data/db
+    ports:
+      - "27017:27017"
+    command: 
+      - '--logpath'
+      - '/var/log/mongodb/mongod.log'
   
-  exercise01:
+  exercisecabify:
     depends_on:
+      - mongodb
       - messageapp
-    image: "exercise01"
+    build: .
     expose:
       - "9001"
     ports:
       - "9001:9001"
     links:
       - "messageapp:messageDB"
+
 

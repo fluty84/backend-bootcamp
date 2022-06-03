@@ -209,6 +209,49 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "get all messages",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "destination",
+							"value": "somewere",
+							"type": "text"
+						},
+						{
+							"key": "message",
+							"value": "whatever",
+							"type": "text"
+						},
+						{
+							"key": "message",
+							"value": "other",
+							"type": "text",
+							"disabled": true
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:9001/messages",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9001",
+					"path": [
+						"messages"
+					]
+				}
+			},
+			"response": []
 		}
 	]
 }
