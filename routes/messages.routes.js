@@ -30,6 +30,10 @@ router.post("/", (req, res) => {
     if (!body) {
         return res.status(400).json({ message: "Need message key" })
     }
+    if (!number) {
+        return res.status(400).json({ message: "Need message key" })
+    }
+    
 
 
     MessageAppService

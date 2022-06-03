@@ -17,7 +17,7 @@
 
 - /messages 
   - Method POST => 
-  - Response: 200 
+  - Response: 200 OK
   - Error responses:
 
      - 400 "Need destination & message keys"
@@ -27,7 +27,7 @@
 
 - /messages 
   - Method GET => 
-  - Response: a JSON with database's messages
+  - Response: a JSON with database's messages with MESSAGE's model
 
 ### Business Decisions
 
