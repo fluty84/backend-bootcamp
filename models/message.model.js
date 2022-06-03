@@ -15,14 +15,11 @@ const messageSchema = new Schema(
            
         },
         
-        status: Boolean,
-        
-        sent: {
-            type:"string", 
-            enum: ["Message Sent", "Message not sent"],
+        status: {
+            type: String, 
+            enum: ["Message Sent", "Message not sent", "Message sent but not confirmed"],
             default: "Message not sent" 
-        }, 
-        confirmed: Boolean
+        } 
     },
     {
         timestamps: true,

@@ -1,49 +1,93 @@
-# Readme
+
+# Cabify Message APP
+
+Cabify's Bootcamp Backend project 
 
 
-## Contract 
+## Deployement
 
-### Models
-- MESSAGE: 
-     
-  - destination:String
-  - message:String
-  - number:String
-  - status:Boolean => becomes true when everything is ok
-  - sent:Enum => can be "Message Sent" or "Message not sent"
-  - confirmed:Boolean => becomes true when getting a response from messageapp
+Once downloaded, go to project's folder an run: .
 
-### Express endpoint table
+(If you need to install Doker go to => [link](https://www.docker.com/get-started/) )
 
-- /messages 
-  - Method POST => 
-  - Response: 200 OK
-  - Error responses:
+```bash
+  docker compose up
+```
 
-     - 400 "Need destination & message keys"
-     - 400 "Need destination key"
-     - 400 "Need message key"
-     - 500 "Temporal Server Error"
+### Docker-Compose structure
 
-- /messages 
-  - Method GET => 
-  - Response: a JSON with database's messages with MESSAGE's model
-
-### Business Decisions
-
-
-
+```bash
 ---
+version: '3'
+services:
+  messageapp:
+    image: "cabify/backend-bootcamp-messageapp:latest"
+    expose:
+      - "3000"
+    ports:
+      - "3000:3000"
+
+  mongodb:
+    image: "mongo:5.0.8-focal"
+    volumes:
+      - ./data/db:/data/db
+    ports:
+      - "27017:27017"
+    command: 
+      - '--logpath'
+      - '/var/log/mongodb/mongod.log'
+  
+  exercisecabify:
+    depends_on:
+      - mongodb
+      - messageapp
+    build: .
+    expose:
+      - "9001"
+    ports:
+      - "9001:9001"
+    links:
+      - "messageapp:messageDB"
+
+
+```
+
+    
+## API Reference
+
+#### Get all items
+
+```http
+  GET /messages
+```
+
+| Parameter | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `destination` | `string` | destination of the message |
+| `message` | `string` | message content |
+| `number` | `number` | ?? |
+| `status` | `boolean` | becomes true when send & save & confirmation is ok |
+| `sent` | `enum` | ?? |
 
 
 
-###
-[POSTMAN tests Link](test_messages.postman_collection.json)
 
 
 
+#### Send message
+
+```http
+  POST /message
+```
+
+| Parameter | Type     | Description                       |
+| :-------- | :------- | :-------------------------------- |
+| `destination` | `string` | destination of the message |
+| `message` | `string` | message content |
+| `number` | `number` | phone number |
 
 
+#### add(num1, num2)
 
-
+Takes two numbers and returns the sum.
 

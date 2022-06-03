@@ -39,32 +39,32 @@ router.post("/", (req, res) => {
     MessageAppService
         .sendMessage(destination, body)
         .then(response => {
-            let sent = ""
-            const status = response.status === 200 && response.data === "OK"
-            status ? sent = "Message Sent" : sent = "Message not sent"
+            
+            const status = "Message not sent"
+
+            if(response.status === 200 && response.data === "OK"){
+                status = "Message Sent"
+            }
+
             return MessageDB
                 .create({ 
                     destination,
                     message: body,
                     number: parseInt(number),
                     status,
-                    sent,
-                    confirmed:true
                  })
         })
         .then(response => res.json(response))
         .catch(err => {
-            console.log(err)
+        
             if (err.status === 504) {
                 return MessageDB
                     .create({ 
                         destination, 
                         message: body, 
                         number: parseInt(number), 
-                        status:false,
-                        sent: "Message Sent", 
-                        confirmed: false })
-                    .then(response => res.status(500).json(`${response.status} but not confirmed`))
+                        status: "Message sent but not confirmed"})
+                    .then(response => res.status(500).json(response.status))
             }
 
             if (err.message.includes("code 500")) {
@@ -74,11 +74,9 @@ router.post("/", (req, res) => {
                         destination,
                         message: body,
                         number: parseInt(number),
-                        status: false,
-                        sent: "Message not sent",
-                        confirmed: false
+                        status: "Message not sent",
                     })
-                    .then(response => res.status(500).json(response.sent))
+                    .then(response => res.status(500).json(response.status))
                 
             } else {
 
