@@ -25,9 +25,13 @@
      - 400 "Need message key"
      - 500 "Temporal Server Error"
 
+- /messages 
+  - Method GET => 
+  - Response: a JSON with database's messages
+
 ### Business Decisions
 
-In addition to testing user's data sent, I listen messsageapp error response to translate it to a more "user-friendly" language with error details, In case you have made a successful call, but the messageapp does not work properly internally. 
+
 
 ---
 
