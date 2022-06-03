@@ -14,45 +14,6 @@ Once downloaded, go to project's folder an run: .
   docker compose up
 ```
 
-### Docker-Compose structure
-
-```bash
----
-version: '3'
-services:
-  messageapp:
-    image: "cabify/backend-bootcamp-messageapp:latest"
-    expose:
-      - "3000"
-    ports:
-      - "3000:3000"
-
-  mongodb:
-    image: "mongo:5.0.8-focal"
-    volumes:
-      - ./data/db:/data/db
-    ports:
-      - "27017:27017"
-    command: 
-      - '--logpath'
-      - '/var/log/mongodb/mongod.log'
-  
-  exercisecabify:
-    depends_on:
-      - mongodb
-      - messageapp
-    build: .
-    expose:
-      - "9001"
-    ports:
-      - "9001:9001"
-    links:
-      - "messageapp:messageDB"
-
-
-```
-
-    
 ## API Reference
 
 #### Get all items
@@ -86,8 +47,25 @@ services:
 | `message` | `string` | message content |
 | `number` | `number` | phone number |
 
+| Error | Code    | Description                       |
+| :-------- | :------- | :-------------------------------- |
+| `Need destination key` | 400 | destination key is not provided or is null |
+| `Need message key` | 400 | message key is not provided or is null |
+| `Need number key` | 400 | number key is not provided or is null|
+| `Need destination and number [...]` | 400 | number key is not provided or is null|
+| `values only can be strings` | 400 | destination & message must be String|
+| `Message sent but not confirmed` | 504 | messageapp timeouts response|
+| `Message not sent` | 500 | messageapp fails |
 
-#### add(num1, num2)
 
-Takes two numbers and returns the sum.
+[POSTMAN tests collection](test_messages.postman_collection.json)
+
+
+
+
+
+
+
+
+
 

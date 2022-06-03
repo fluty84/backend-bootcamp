@@ -64,7 +64,7 @@ router.post("/", (req, res) => {
                         message: body, 
                         number: parseInt(number), 
                         status: "Message sent but not confirmed"})
-                    .then(response => res.status(500).json(response.status))
+                    .then(response => res.status(504).json(response.status))
             }
 
             if (err.message.includes("code 500")) {
