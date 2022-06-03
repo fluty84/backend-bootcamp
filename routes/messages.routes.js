@@ -40,7 +40,7 @@ router.post("/", (req, res) => {
         .sendMessage(destination, body)
         .then(response => {
             
-            const status = "Message not sent"
+            let status = "Message not sent"
 
             if(response.status === 200 && response.data === "OK"){
                 status = "Message Sent"
@@ -54,7 +54,7 @@ router.post("/", (req, res) => {
                     status,
                  })
         })
-        .then(response => res.json(response))
+        .then(response => res.status(200).json(response.status))
         .catch(err => {
         
             if (err.status === 504) {

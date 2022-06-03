@@ -66,7 +66,7 @@ services:
 | `destination` | `string` | destination of the message |
 | `message` | `string` | message content |
 | `number` | `number` | ?? |
-| `status` | `enum` | json with the result |
+| `status` | `enum` | JSON with the result of the call |
 
 
 
