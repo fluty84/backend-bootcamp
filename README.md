@@ -11,7 +11,7 @@ Once downloaded, go to project's folder an run: .
 (If you need to install Doker go to => [link](https://www.docker.com/get-started/) )
 
 ```bash
-  docker compose up
+  $ docker compose up
 ```
 
 ## API Reference
@@ -58,8 +58,13 @@ Once downloaded, go to project's folder an run: .
 | `Message not sent` | 500 | messageapp fails |
 
 
-[POSTMAN tests collection](test_messages.postman_collection.json)
+[POSTMAN tests collection](test_messages.postman_collection.json) 
 
+Run on CLI
+
+```
+   $ docker exec -it cabify_exercisecabify_1 node postman-test
+```
 
 
 
