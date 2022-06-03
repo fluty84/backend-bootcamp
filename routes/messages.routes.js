@@ -68,7 +68,7 @@ router.post("/", (req, res) => {
             }
 
             if (err.message.includes("code 500")) {
-
+                
                 MessageDB
                     .create({
                         destination,
