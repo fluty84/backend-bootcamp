@@ -35,21 +35,30 @@ router.post("/", (req, res) => {
     MessageAppService
         .sendMessage(destination, body)
         .then(response => {
-            const sent = ""
+            let sent = ""
             const status = response.status === 200 && response.data === "OK"
             status ? sent = "Message Sent" : sent = "Message not sent"
-            return MessageDB.create({ destination, message: body, number: parseInt(number), status, sent })
+            return MessageDB
+                .create({ 
+                    destination,
+                    message: body,
+                    number: parseInt(number),
+                    status,
+                    sent,
+                    confirmed:true
+                 })
         })
         .then(response => res.json(response))
         .catch(err => {
             console.log(err)
-            if (err.response.status === 504) {
+            if (err.status === 504) {
                 return MessageDB
                     .create({ 
                         destination, 
                         message: body, 
                         number: parseInt(number), 
-                        status: "Message Sent", 
+                        status:false,
+                        sent: "Message Sent", 
                         confirmed: false })
                     .then(response => res.status(500).json(`${response.status} but not confirmed`))
             }
@@ -61,6 +70,7 @@ router.post("/", (req, res) => {
                         destination,
                         message: body,
                         number: parseInt(number),
+                        status: false,
                         sent: "Message not sent",
                         confirmed: false
                     })
