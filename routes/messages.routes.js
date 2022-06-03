@@ -25,13 +25,13 @@ router.post("/", (req, res) => {
         return res.status(400).json({ message: "values only can be strings" })
     }
     if (!destination) {
-        return res.status(400).json({ message: "Need destination key" })
+        return res.status(400).json({ message: "Need destination key or destination can't be null" })
     }
     if (!body) {
-        return res.status(400).json({ message: "Need message key" })
+        return res.status(400).json({ message: "Need message key or message can't be null" })
     }
     if (!number) {
-        return res.status(400).json({ message: "Need message key" })
+        return res.status(400).json({ message: "Need number key or number can't be null" })
     }
     
 
