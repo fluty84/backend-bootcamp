@@ -18,7 +18,7 @@ const messageSchema = new Schema(
         status: {
             type: String, 
             enum: ["Message Sent", "Message not sent", "Message sent but not confirmed"],
-            default: "Message not sent" 
+            default: "Message Sent" 
         } 
     },
     {
