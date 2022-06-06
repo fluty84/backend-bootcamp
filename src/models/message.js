@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-
 import database from "../database.js";
 
 const messageSchema = new mongoose.Schema({
