@@ -11,6 +11,7 @@ Once downloaded, go to project's folder an run: .
 (If you need to install Doker go to => [link](https://www.docker.com/get-started/) )
 
 ```bash
+  $ docker compose build
   $ docker compose up
 ```
 
@@ -52,7 +53,7 @@ Once downloaded, go to project's folder an run: .
 | `Need destination key` | 400 | destination key is not provided or is null |
 | `Need message key` | 400 | message key is not provided or is null |
 | `Need number key` | 400 | number key is not provided or is null|
-| `Need destination and number [...]` | 400 | number key is not provided or is null|
+| `Need destination and message [...]` | 400 | destination & message are not provided or are null|
 | `values only can be strings` | 400 | destination & message must be String|
 | `Message sent but not confirmed` | 504 | messageapp timeouts response|
 | `Message not sent` | 500 | messageapp fails |
