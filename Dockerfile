@@ -1,11 +1,6 @@
-FROM node
-
-EXPOSE 8080
-
-COPY package*.json ./
-
+FROM node:latest
+ADD . /app
+WORKDIR /app
 RUN npm install
 
-COPY . ./
-
-CMD ["npm", "start"]
+CMD ["DEBUG=express:*", "node", "index.js"]
