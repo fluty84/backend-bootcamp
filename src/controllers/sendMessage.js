@@ -1,12 +1,24 @@
 import http from "http"
+import locks from "locks"
 import saveMessage from "../clients/saveMessage.js"
 import checkBudget from "../clients/checkBudget.js"
+import saveAmount from "../clients/saveAmount.js"
 
+
+
+const MESSAGE_PRICE = 2
 
 export default async (req, res) => {
+
   const body = JSON.stringify(req.body);
 
-  const credit = async
+  const actualMoney = await checkBudget()
+
+  if (actualMoney.amount < MESSAGE_PRICE) {
+    return res.status(500).json("Please Top Up")
+  } else {
+    saveAmount(-MESSAGE_PRICE)
+  }
 
   const postOptions = {
     //host: "127.0.0.1",
@@ -24,23 +36,26 @@ export default async (req, res) => {
   const postReq = http.request(postOptions);
 
   postReq.on("response", async (postRes) => {
-    try {
-      await saveMessage({
-        ...req.body,
-        status: postRes.statusCode === 200 ? "OK" : "ERROR",
-      });
-      if (postRes.statusCode !== 200) {
-        throw new Error('Error in the messageapp request');
-      }
 
-      res.statusCode = 200;
-      res.end(postRes.body);
-    } catch (error) {
-      console.log(error.message);
-      res.statusCode = 500;
-      res.end(`Internal server error: SERVICE ERROR ${error.message}`);
-    }
-  });
+      try {
+        await saveMessage({
+          ...req.body,
+          status: postRes.statusCode === 200 ? "OK" : "ERROR",
+        });
+        if (postRes.statusCode !== 200) {
+          throw new Error('Error in the messageapp request');
+        }
+
+        res.statusCode = 200;
+        res.end(postRes.body);
+      } catch (error) {
+        saveAmount(MESSAGE_PRICE)
+
+        console.log(error.message, "Your money was returned")
+        res.statusCode = 500;
+        res.end(`Internal server error: SERVICE ERROR ${error.message} Your money was returned`);
+      }
+  })
 
   postReq.on("timeout", async () => {
     console.error("Timeout Exceeded!");
@@ -53,6 +68,7 @@ export default async (req, res) => {
       });
 
     } finally {
+      saveAmount(MESSAGE_PRICE)
       res.statusCode = 500;
       res.end("Internal server error: TIMEOUT");
     }
