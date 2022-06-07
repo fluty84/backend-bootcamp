@@ -20,8 +20,8 @@ export default async (req, res) => {
   }
 
   const postOptions = {
-    host: "localhost",
-    //host: "messageapp",
+    //host: "localhost",
+    host: "messageapp",
     port: 3000,
     path: "/message",
     method: "post",

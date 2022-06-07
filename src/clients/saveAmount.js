@@ -40,6 +40,4 @@ export default async (number) => {
         console.log("error saving", err)
     }
 
- 
-
 }

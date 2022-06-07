@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
-//const server = "mongodb:27017";
-const server = "localhost:27017";
+const server = "mongodb:27017";
+//const server = "localhost:27017";
 
 const database = "cabify_bootcamp";
 
