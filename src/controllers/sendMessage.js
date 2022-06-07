@@ -1,5 +1,4 @@
 import http from "http"
-import locks from "locks"
 import saveMessage from "../clients/saveMessage.js"
 import checkBudget from "../clients/checkBudget.js"
 import saveAmount from "../clients/saveAmount.js"
@@ -10,7 +9,7 @@ const MESSAGE_PRICE = 2
 
 export default async (req, res) => {
 
-  const body = JSON.stringify(req.body);
+  const body = JSON.stringify(req.body)
 
   const actualMoney = await checkBudget()
 
@@ -21,8 +20,8 @@ export default async (req, res) => {
   }
 
   const postOptions = {
-    //host: "127.0.0.1",
-    host: "messageapp",
+    host: "localhost",
+    //host: "messageapp",
     port: 3000,
     path: "/message",
     method: "post",
@@ -50,7 +49,7 @@ export default async (req, res) => {
         res.end(postRes.body);
       } catch (error) {
         saveAmount(MESSAGE_PRICE)
-
+        console.log(res, "the response----------------------------------")
         console.log(error.message, "Your money was returned")
         res.statusCode = 500;
         res.end(`Internal server error: SERVICE ERROR ${error.message} Your money was returned`);

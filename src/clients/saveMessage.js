@@ -18,9 +18,9 @@ export default async (messageParams) => {
       mutex.unlock();
     });
 
-   
-    return doc;
+    return message;
   } catch (err) {
+    mutex.unlock();
     console.log("Error while saving", err);
   }
 }
