@@ -1,10 +1,11 @@
-import Budget from "../models/budget.js";
+import {Budget, BackupBudget} from "../models/budget.js";
 import checkBudget from "./checkBudget.js";
-
 
 export default async (number) => {
 
     let actualMoney = await checkBudget()
+
+    let passMoney = actualMoney ?  actualMoney.amount :  0
 
     try {
         console.log(actualMoney, "actual money")
@@ -13,18 +14,31 @@ export default async (number) => {
 
             actualMoney.amount = actualMoney.amount + number
 
-            const sum = await actualMoney.save()
+            if(actualMoney.amount <= 0){
+            
+                return "Please Top Up to send a message"
+            }
 
-            return sum
+            const response = await actualMoney.save()
+            
+            await BackupBudget.findOneAndUpdate({ amount:response.amount })
+        
+
+        return response
 
         } else {
 
-           const sum = await Budget.create({ amount: number })
-        
-           return sum
+           const response = await Budget.create({ amount: number })
+           await BackupBudget.create({amount:response.amount}) 
+                
+
+           return response
         }
 
     } catch (err) {
+        await Budget.findOneAndUpdate({},{amount:passMoney})
         console.log("error saving", err)
     }
+
+ 
 }

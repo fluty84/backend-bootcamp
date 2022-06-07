@@ -47,9 +47,10 @@ export default async (req, res) => {
 
         res.statusCode = 200;
         res.end(postRes.body);
+        
       } catch (error) {
+
         saveAmount(MESSAGE_PRICE)
-        console.log(res, "the response----------------------------------")
         console.log(error.message, "Your money was returned")
         res.statusCode = 500;
         res.end(`Internal server error: SERVICE ERROR ${error.message} Your money was returned`);
