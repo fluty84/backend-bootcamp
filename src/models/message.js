@@ -10,9 +10,12 @@ const messageSchema = new mongoose.Schema({
     type: String,
     enum: ["ERROR", "OK", "TIMEOUT"],
   },
-});
+}, {timestamps: true});
 
 const Message = database.model("Message", messageSchema);
 const MessageBackup = databaseBackup.model("MessageBackup", messageSchema)
+
+Message.syncIndexes()
+MessageBackup.syncIndexes()
 
 export { Message , MessageBackup }

@@ -1,5 +1,6 @@
 import {Budget, BackupBudget} from "../models/budget.js";
 import checkBudget from "./checkBudget.js";
+import compareDB from "./compareDB.js";
 
 export default async (number) => {
 
@@ -31,7 +32,6 @@ export default async (number) => {
            const response = await Budget.create({ amount: number })
            await BackupBudget.create({amount:response.amount}) 
                 
-
            return response
         }
 
@@ -41,4 +41,5 @@ export default async (number) => {
     }
 
  
+
 }
