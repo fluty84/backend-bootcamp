@@ -13,7 +13,7 @@ export default async (req, res) => {
 
   const actualMoney = await checkBudget()
 
-  if (actualMoney.amount < MESSAGE_PRICE) {
+  if (actualMoney?.amount < MESSAGE_PRICE) {
     return res.status(500).json("Please Top Up")
   } else {
     saveAmount(-MESSAGE_PRICE)

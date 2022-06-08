@@ -4,6 +4,8 @@ services:
     build: .
     ports:
       - "9003:9003"
+    depends_on:
+      - mongodb
   messageapp:
     image: cabify/backend-bootcamp-messageapp
     ports:
@@ -18,6 +20,8 @@ services:
     ports:
       - 27017:27017
   mongobackup:
+    depends_on:
+      - mongodb
     image: mongo
     command: 
       - '--logpath'
