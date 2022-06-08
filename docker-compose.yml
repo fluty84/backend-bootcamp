@@ -1,12 +1,12 @@
 version: "3"
 services:
-  # cabifyapp:
-  #   build: .
-  #   ports:
-  #     - "9003:9003"
-  #   depends_on:
-  #     - mongodb
-  #     - cache
+  cabifyapp:
+    build: .
+    ports:
+      - "9003:9003"
+    depends_on:
+      - mongodb
+      - cache
   messageapp:
     image: cabify/backend-bootcamp-messageapp
     ports:

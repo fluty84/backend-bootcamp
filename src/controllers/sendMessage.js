@@ -25,7 +25,7 @@ export default async (req, res) => {
   const messageSender = (body, taskId) => {
 
     const postOptions = {
-      host: process.env.SERVER,
+      host: process.env.MESSAGEAPP,
       port: 3000,
       path: "/message",
       method: "post",

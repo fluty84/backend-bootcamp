@@ -1,9 +1,11 @@
+import 'dotenv/config'
+
 import { createClient } from 'redis'
 
 export default async() => {
 
     const client = createClient({
-        url: 'redis://localhost:6379' //REVISA EN DOCKER
+        url: `redis://${process.env.REDISDOKER}:6379` //REVISA EN DOCKER
     })
 
     client.on('error', (err) => console.log('Redis Client Error', err))
