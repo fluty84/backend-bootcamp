@@ -1,16 +1,23 @@
-import bodyParser from "body-parser";
-import express from "express";
-import { ValidationError, Validator } from "express-json-validator-middleware";
+import bodyParser from "body-parser"
+import express from "express"
+import redisStart from "./src/redisStart.js"
 
-import getMessages from "./src/controllers/getMessages.js";
-import sendMessage from "./src/controllers/sendMessage.js";
-import topUp from "./src/controllers/topUp.js";
+import { ValidationError, Validator } from "express-json-validator-middleware"
+
+import getMessages from "./src/controllers/getMessages.js"
+import sendMessage from "./src/controllers/sendMessage.js"
+import topUp from "./src/controllers/topUp.js"
+import getMessageStatus from "./src/clients/getMessageStatus.js"
+
+import { Message, MessageBackup } from "./src/models/message.js"
+import cleanPendingProcess from "./src/utils/cleanPendingProcess.js"
 
 
-const app = express();
+const app = express()
+const redis = redisStart()
 
-const validator = new Validator({ allErrors: true });
-const { validate } = validator;
+const validator = new Validator({ allErrors: true })
+const { validate } = validator
 
 
 // Validate models
@@ -50,6 +57,10 @@ app.post(
 // Get messeges
 
 app.get("/messages", getMessages);
+
+// Get process status
+
+app.get("/message/:messageId/status", getMessageStatus)
 
 //Top Up Credit
 
