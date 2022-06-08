@@ -32,15 +32,16 @@ export default async (messageParams) => {
       doc()
       console.log("Message saved succesfully:", message)
 
-      mutex.unlock()
+      //mutex.unlock()
 
     });
 
     return message
   } catch (err) {
-    mutex.unlock()
+    //mutex.unlock()
     console.log("Error while saving", err)
+  
   } finally {
-    mutex.unlock()
+     mutex.unlock()
   }
 }
