@@ -1,7 +1,7 @@
 import http from "http"
 import saveMessage from "../clients/saveMessage.js"
 import checkBudget from "../clients/checkBudget.js"
-import saveAmount from "../clients/saveAmount.js"
+import changeBudgetBy from "../clients/changeBudgetBy.js"
 
 
 
@@ -13,15 +13,15 @@ export default async (req, res) => {
 
   const actualMoney = await checkBudget()
 
-  if (actualMoney.amount < MESSAGE_PRICE) {
+  if (actualMoney?.amount < MESSAGE_PRICE) {
     return res.status(500).json("Please Top Up")
   } else {
-    saveAmount(-MESSAGE_PRICE)
+    changeBudgetBy(-MESSAGE_PRICE)
   }
 
   const postOptions = {
-    host: "localhost",
-    //host: "messageapp",
+    //host: "localhost",
+    host: "messageapp",
     port: 3000,
     path: "/message",
     method: "post",
@@ -36,24 +36,25 @@ export default async (req, res) => {
 
   postReq.on("response", async (postRes) => {
 
-      try {
-        await saveMessage({
-          ...req.body,
-          status: postRes.statusCode === 200 ? "OK" : "ERROR",
-        });
-        if (postRes.statusCode !== 200) {
-          throw new Error('Error in the messageapp request');
-        }
-
-        res.statusCode = 200;
-        res.end(postRes.body);
-      } catch (error) {
-        saveAmount(MESSAGE_PRICE)
-        console.log(res, "the response----------------------------------")
-        console.log(error.message, "Your money was returned")
-        res.statusCode = 500;
-        res.end(`Internal server error: SERVICE ERROR ${error.message} Your money was returned`);
+    try {
+      await saveMessage({
+        ...req.body,
+        status: postRes.statusCode === 200 ? "OK" : "ERROR",
+      });
+      if (postRes.statusCode !== 200) {
+        throw new Error('Error in the messageapp request');
       }
+
+      res.statusCode = 200;
+      res.end(postRes.body);
+
+    } catch (error) {
+
+      changeBudgetBy(MESSAGE_PRICE)
+      console.log(error.message, "Your money was returned")
+      res.statusCode = 500;
+      res.end(`Internal server error: SERVICE ERROR ${error.message} Your money was returned`);
+    }
   })
 
   postReq.on("timeout", async () => {
@@ -67,7 +68,7 @@ export default async (req, res) => {
       });
 
     } finally {
-      saveAmount(MESSAGE_PRICE)
+      changeBudgetBy(MESSAGE_PRICE)
       res.statusCode = 500;
       res.end("Internal server error: TIMEOUT");
     }

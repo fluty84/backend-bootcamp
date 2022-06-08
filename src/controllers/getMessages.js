@@ -1,7 +1,7 @@
-import getMessages from "../clients/getMessages.js";
+import getMessages from "../clients/getMessages.js"
 
 export default async (req, res) => {
-  const messages = await getMessages();
+  const messages = await getMessages()
   
-  res.json(messages);
+  res.json(messages)
 }

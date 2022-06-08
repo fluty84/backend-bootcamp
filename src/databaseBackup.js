@@ -1,9 +1,9 @@
 import mongoose from "mongoose";
 
-const server = "mongodb:27017";
-//const server = "localhost:27017";
+const server = "mongobackup:27017";
+//const server = "localhost:27018";
 
-const database = "cabify_bootcamp";
+const database = "cabify_bootcamp_backup";
 
 export default mongoose.createConnection(`mongodb://${server}/${database}`, {
   useNewUrlParser: true,

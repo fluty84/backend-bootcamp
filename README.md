@@ -1,15 +1,77 @@
-# Exercise 3 solution
 
-## Getting started
+# Cabify Message APP
 
-We are now adding a persistence layer, in our case MongoDB.
+Cabify's Bootcamp Backend project 
 
-Al the source code can be found under `/src` folder with models controllers and database connection
 
-To check results we can run:
+## Deployement
 
-1) run messageapp with `npm run docker` on port 3000
-2) run a local app with `npm run app` on port 9001
-3) or run both servers in one command `npm run start:all`
+Once downloaded, go to project's folder an run: .
 
-You can run `./curl_requests.sh` to run some curl into the app and see results.
+(If you need to install Doker go to => [link](https://www.docker.com/get-started/) )
+
+```bash
+  $ docker-compose build
+  $ docker-compose up
+```
+
+## API Reference
+
+#### Get all items
+
+```http
+  GET /messages
+```
+
+| Parameter | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `destination` | `string` | destination of the message |
+| `message` | `string` | message content |
+| `number` | `number` | ?? |
+| `status` | `enum` | JSON with the result of the call |
+
+
+
+
+
+
+
+#### Send message
+
+```http
+  POST /message
+```
+
+| Parameter | Type     | Description                       |
+| :-------- | :------- | :-------------------------------- |
+| `destination` | `string` | destination of the message |
+| `message` | `string` | message content |
+| `number` | `number` | phone number |
+
+| Error | Code    | Description                       |
+| :-------- | :------- | :-------------------------------- |
+| `Need destination key` | 400 | destination key is not provided or is null |
+| `Need message key` | 400 | message key is not provided or is null |
+| `Need number key` | 400 | number key is not provided or is null|
+| `Need destination and message [...]` | 400 | destination & message are not provided or are null|
+| `values only can be strings` | 400 | destination & message must be String|
+| `Message sent but not confirmed` | 504 | messageapp timeouts response|
+| `Message not sent` | 500 | messageapp fails |
+
+
+[POSTMAN tests collection](test_messages.postman_collection.json) 
+
+Run on CLI
+
+```
+   $ docker exec -it cabify_exercisecabify_1 node postman-test
+```
+
+
+
+
+
+
+
+
+
