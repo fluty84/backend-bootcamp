@@ -1,7 +1,9 @@
 import mongoose from "mongoose";
+import 'dotenv/config'
 
-const server = "mongobackup:27017";
-//const server = "localhost:27018";
+console.log("env backup", process.env.BACKUPSERVER)
+
+const server = process.env.BACKUPSERVER;
 
 const database = "cabify_bootcamp_backup";
 

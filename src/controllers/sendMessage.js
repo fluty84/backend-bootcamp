@@ -2,7 +2,7 @@ import http from "http"
 import saveMessage from "../clients/saveMessage.js"
 import checkBudget from "../clients/checkBudget.js"
 import changeBudgetBy from "../clients/changeBudgetBy.js"
-
+import 'dotenv/config' 
 
 
 const MESSAGE_PRICE = 2
@@ -20,8 +20,7 @@ export default async (req, res) => {
   }
 
   const postOptions = {
-    //host: "localhost",
-    host: "messageapp",
+    host: process.env.SERVER,
     port: 3000,
     path: "/message",
     method: "post",
