@@ -1,6 +1,6 @@
-import {Budget, BackupBudget} from "../models/budget.js";
-import checkBudget from "./checkBudget.js";
-import compareDB from "./compareDB.js";
+import {Budget, BackupBudget} from "../models/budget.js"
+import checkBudget from "./checkBudget.js"
+import compareDB from "./compareDB.js"
 
 export default async (number) => {
 

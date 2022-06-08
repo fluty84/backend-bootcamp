@@ -1,6 +1,6 @@
-import mongoose from "mongoose";
-import database from "../database.js";
-import databaseBackup from "../databaseBackup.js";
+import mongoose from "mongoose"
+import database from "../database.js"
+import databaseBackup from "../databaseBackup.js"
 
 
 const messageSchema = new mongoose.Schema({

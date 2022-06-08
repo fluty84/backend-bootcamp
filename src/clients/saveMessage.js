@@ -13,19 +13,25 @@ export default async (messageParams) => {
   try {
     
     const doc = async() => {
-        await message.save()
-       try {
+        
+    await message.save()
+      
+      try {
           await backup.save()
+        
         } catch (error ){
+          
           retry(backup, 3)
           console.log(error)
        }
       }
 
     mutex.lock(function () {
+      
       console.log('We got the lock!')
       doc()
       console.log("Message saved succesfully:", message)
+     
       mutex.unlock()
       
     });

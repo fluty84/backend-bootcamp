@@ -25,4 +25,4 @@ services:
     volumes:
       - ./data/db2:/data/db2
     ports:
-      - 27018:27800
+      - 27018:27017
