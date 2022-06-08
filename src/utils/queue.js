@@ -13,7 +13,6 @@ export default (task, taskId) => {
     });
 
     const main = async () => {
-
         await queue.add(task)     
     }
 
