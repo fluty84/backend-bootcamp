@@ -1,5 +1,7 @@
 import express from "express"
 import bodyParser from "body-parser"
+import 'dotenv/config'
+import queueListener from "./queues/queueListener.js"
 
 import topUp from "./src/controllers/topUp.js"
 
@@ -31,9 +33,9 @@ app.post(
     topUp
 )
 
+queueListener()
 
-
-
+// Create app port
 const port = 9017;
 app.listen(port, () => {
     console.log("App started on PORT: ", port);

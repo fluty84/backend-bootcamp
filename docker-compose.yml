@@ -59,7 +59,7 @@ services:
     volumes:
       - ./message/data/db:/message/data/db
     ports:
-      - 27027:27027
+      - 27027:27017
   replica_message:
     image: mongo
     command:
@@ -68,7 +68,7 @@ services:
     volumes:
       - ./message/data/replica:/message/data/replica
     ports:
-      - 27028:27027
+      - 27028:27017
 
   redis:
     image: redis
