@@ -13,7 +13,10 @@ export default (task, taskId) => {
     });
 
     const main = async () => {
-        await queue.add(task)     
+        await queue.add(task,{
+            attemps: 4,
+            backoff:5000
+        })     
     }
 
     queue.process((job, done) => {
