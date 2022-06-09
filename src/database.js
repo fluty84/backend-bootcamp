@@ -1,7 +1,9 @@
 import mongoose from "mongoose";
+import 'dotenv/config' 
 
-const server = "mongodb:27017";
-//const server = "localhost:27017";
+console.log("env database", process.env.SERVER)
+
+const server = `${process.env.SERVER}:27017`;
 
 const database = "cabify_bootcamp";
 

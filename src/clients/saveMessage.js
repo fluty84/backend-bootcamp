@@ -1,15 +1,19 @@
 import { Message, MessageBackup } from "../models/message.js"
 import retry from "../utils/retry.js"
+import cleanPendingProcess from "../utils/cleanPendingProcess.js"
+import queue from "../utils/queue.js"
 
 import locks from "locks"
 
 export default async (messageParams) => {
 
+
+  const dbs = [Message, MessageBackup]
+
   const mutex = locks.createMutex()
 
   const message = new Message(messageParams)
   const backup = new MessageBackup(messageParams)
-
   try {
 
     const doc = async () => {
@@ -18,6 +22,8 @@ export default async (messageParams) => {
 
       try {
         await backup.save()
+
+        queue(cleanPendingProcess(dbs))
 
       } catch (error) {
 
@@ -32,15 +38,14 @@ export default async (messageParams) => {
       doc()
       console.log("Message saved succesfully:", message)
 
-      mutex.unlock()
-
-    });
+    })
 
     return message
   } catch (err) {
-    mutex.unlock()
+  
     console.log("Error while saving", err)
+  
   } finally {
-    mutex.unlock()
+     mutex.unlock()
   }
 }

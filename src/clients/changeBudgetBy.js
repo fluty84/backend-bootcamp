@@ -1,6 +1,5 @@
 import {Budget, BackupBudget} from "../models/budget.js"
 import checkBudget from "./checkBudget.js"
-import compareDB from "./compareDB.js"
 
 export default async (number) => {
 
@@ -14,11 +13,6 @@ export default async (number) => {
         if (actualMoney) {
 
             actualMoney.amount = actualMoney.amount + number
-
-            if(actualMoney.amount <= 0){
-            
-                return "Please Top Up to send a message"
-            }
 
             const response = await actualMoney.save()
             

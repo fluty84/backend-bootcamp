@@ -6,9 +6,10 @@ import databaseBackup from "../databaseBackup.js"
 const messageSchema = new mongoose.Schema({
   destination: String,
   body: String,
+  taskId: String, 
   status: {
     type: String,
-    enum: ["ERROR", "OK", "TIMEOUT"],
+    enum: ["ERROR", "OK", "TIMEOUT", "PENDING"],
   },
 }, {timestamps: true});
 
