@@ -1,55 +1,76 @@
 version: "3"
 services:
-  cabifyapp:
-    build: .
-    ports:
-      - "9003:9003"
-    depends_on:
-      - mongodb
-      - cache
-      - redis-commander
+  # message:
+  #   build: message/
+  #   ports:
+  #     - "9003:9003"
+  #   links:
+  #     - messageapp
+  #     - mongodb_message
+  #     - replica_message
+  #     - redis
+  #     - credit
+  #   depends_on:
+  #     - messageapp
+  #     - mongodb_message
+  #     - replica_message
+  #     - redis
+  # credit:
+  #   build: credit/
+  #   ports:
+  #     - "9017:9017"
+  #   links:
+  #     - mongodb_credit
+  #     - replica_credit
+  #     - redis
+  #   depends_on:
+  #     - mongodb_credit
+  #     - replica_credit
+  #     - redis
   messageapp:
     image: cabify/backend-bootcamp-messageapp
     ports:
-      - 3000:3000
-  mongodb:
+      - "3000:3000"
+
+  mongodb_credit:
     image: mongo
     command: 
-      - '--logpath'
-      - '/var/log/mongodb/mongod.log'
+      - "--logpath"
+      - "/var/log/mongodb/mongod-credit.log" 
     volumes:
-      - ./data/db:/data/db
+      - ./credit/data/db:/credit/data/db
     ports:
       - 27017:27017
-    restart: always
-  mongobackup:
-    depends_on:
-      - mongodb
+  replica_credit:
     image: mongo
-    command: 
-      - '--logpath'
-      - '/var/log/mongodb/mongod2.log'
+    command:
+      - "--logpath"
+      - "/var/log/mongodb/mongod-credit-replica.log"  
     volumes:
-      - ./data/db2:/data/db2
+      - ./credit/data/replica:/credit/data/replica
     ports:
       - 27018:27017
-    restart: always
-  cache:
-    image: redis
-    restart: always
-    ports: 
-      - 6379:6379
-    volumes:
-      - cache:/data
-  redis-commander:
-    container_name: redis-commander
-    image: rediscommander/redis-commander
-    restart: always
-    environment:
-      - REDIS_HOSTS=local:cache:6379
-    ports:
-      - 8081:8081
-volumes:
-  cache:
-    driver: local
 
+  mongodb_message:
+    image: mongo
+    command:
+     - "--logpath"
+     - "/var/log/mongodb/mongod-message.log"  
+    volumes:
+      - ./message/data/db:/message/data/db
+    ports:
+      - 27027:27027
+  replica_message:
+    image: mongo
+    command:
+     - "--logpath"
+     - "/var/log/mongodb/mongod-message-replica.log"  
+    volumes:
+      - ./message/data/replica:/message/data/replica
+    ports:
+      - 27028:27027
+
+  redis:
+    image: redis
+    ports:
+      - 6379:6379
