@@ -13,7 +13,7 @@ export default async (req, res) => {
     let message
 
     try {
-         message = await saveMessage({
+        message = await saveMessage({
             ...req.body,
             status: "CHECKING BALANCE",
             taskId
@@ -23,7 +23,12 @@ export default async (req, res) => {
         return res.status(500).json("Error saving message", error)
     }
 
-    queue(message, taskId)
+    try {
+        queue(message, taskId)
 
-    res.status(200).json("Message Sent")
+        res.status(200).json("Message Sent")
+    } catch (error) {
+
+        res.status(500).json(`Error sending to credit ${error}`)
+    }
 }

@@ -1,4 +1,4 @@
-import changeBudgetBy from "../clients/changeBudgetBy.js"
+import changeBudgetBy from "../controllers/changeBudgetBy.js"
 
 export default async (req, res) => {
 

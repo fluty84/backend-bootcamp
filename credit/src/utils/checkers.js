@@ -1,5 +1,5 @@
-import changeBudgetBy from "../src/controllers/changeBudgetBy.js"
-import checkBudget from "../src/clients/checkBudget.js"
+import changeBudgetBy from "../controllers/changeBudgetBy.js"
+import checkBudget from "../clients/checkBudget.js"
 
 
 export const hasMoney = async (message, MESSAGE_PRICE) => {

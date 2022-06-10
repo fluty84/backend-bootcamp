@@ -4,7 +4,6 @@ import saveMessage from "../clients/saveMessage.js"
 import 'dotenv/config'
 
 
-
 const MESSAGE_PRICE = 2
 
 export default async (body) => {
