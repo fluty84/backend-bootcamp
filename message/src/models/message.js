@@ -9,7 +9,7 @@ const messageSchema = new mongoose.Schema({
   taskId: String, 
   status: {
     type: String,
-    enum: ["ERROR", "OK", "TIMEOUT", "PENDING"],
+    enum: ["ERROR", "OK", "TIMEOUT", "PENDING", "CHECKING BALANCE", "Not enough money"],
   },
 }, {timestamps: true});
 

@@ -1,0 +1,43 @@
+import express from "express"
+import bodyParser from "body-parser"
+import 'dotenv/config'
+import queue from "./src/queues/queue.js"
+import changeBudgetQueue from "./src/queues/changeBudgetQueue.js"
+import topUp from "./src/controllers/topUp.js"
+
+import { Validator } from "express-json-validator-middleware"
+
+const validator = new Validator({ allErrors: true })
+const { validate } = validator
+
+console.log("working credit app")
+const app = express()
+
+
+const budggetSchema = {
+    type: "object",
+    required: ["amount"],
+    properties: {
+        amount: {
+            type: "number"
+        },
+    },
+}
+
+//Top Up Credit
+
+app.post(
+    "/credit",
+    bodyParser.json(),
+    validate({ body: budggetSchema }),
+    topUp
+)
+
+queue()
+changeBudgetQueue()
+
+// Create app port
+const port = 9017;
+app.listen(port, () => {
+    console.log("App started on PORT: ", port);
+});

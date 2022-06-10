@@ -1,5 +1,5 @@
 import {Budget, BackupBudget} from "../models/budget.js"
-import checkBudget from "./checkBudget.js"
+import checkBudget from "../clients/checkBudget.js"
 
 export default async (number) => {
 
@@ -7,8 +7,9 @@ export default async (number) => {
 
     let passMoney = actualMoney ?  actualMoney.amount :  0
 
+    if(actualMoney === null){return `error actualmoney is ${actualMoney}`}
+
     try {
-        console.log(actualMoney, "actual money")
 
         if (actualMoney) {
 

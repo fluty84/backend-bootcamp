@@ -1,20 +1,15 @@
 import bodyParser from "body-parser"
 import express from "express"
-import redisStart from "./src/redisStart.js"
 
 import { ValidationError, Validator } from "express-json-validator-middleware"
 
 import getMessages from "./src/controllers/getMessages.js"
-import sendMessage from "./src/controllers/sendMessage.js"
-import topUp from "./src/controllers/topUp.js"
 import getMessageStatus from "./src/clients/getMessageStatus.js"
-
-import { Message, MessageBackup } from "./src/models/message.js"
-import cleanPendingProcess from "./src/utils/cleanPendingProcess.js"
+import checkBalance from "./src/controllers/checkBalance.js"
 
 
 const app = express()
-const redis = redisStart()
+// const redis = redisStart()
 
 const validator = new Validator({ allErrors: true })
 const { validate } = validator
@@ -35,15 +30,6 @@ const messageSchema = {
   },
 };
 
-const budggetSchema = {
-  type: "object",
-  required: ["amount"], 
-  properties: {
-    amount : {
-      type: "number"
-    },
-  }, 
-}
 
 // Create message
 
@@ -51,7 +37,7 @@ app.post(
   "/message",
   bodyParser.json(),
   validate({ body: messageSchema }),
-  sendMessage
+  checkBalance
 )
 
 // Get messeges
@@ -61,15 +47,6 @@ app.get("/messages", getMessages);
 // Get process status
 
 app.get("/message/:messageId/status", getMessageStatus)
-
-//Top Up Credit
-
-app.post(
-  "/credit", 
-  bodyParser.json(), 
-  validate({body:budggetSchema}), 
-  topUp
-)
 
 
 app.use((err, req, res, _next) => {
