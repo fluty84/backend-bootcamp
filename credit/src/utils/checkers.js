@@ -7,7 +7,7 @@ export const hasMoney = async (message, MESSAGE_PRICE) => {
 
     console.log(actualMoney, "moneeeeey on chekers")
 
-    if (actualMoney.amount > MESSAGE_PRICE - 1) {
+    if (actualMoney.amount >= MESSAGE_PRICE) {
 
         message.status = "OK"
         changeBudgetBy(-MESSAGE_PRICE)

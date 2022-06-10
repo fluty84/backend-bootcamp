@@ -6,7 +6,7 @@ export default async (databases) => { //recives an array of databases
     databases.forEach( async (database) => {
 
         const dataPendingFiles = await database.find({ status:"CHECKING BALANCE"}) 
-        const completeTasks = await database.find({ "$or": [{ status:"ERROR" }, { status:"OK" }]})
+        const completeTasks = await database.find({ "$or": [{ status: "ERROR" }, { status: "OK" }, { status: "Not enough money"}]})
 
         dataPendingFiles.forEach( data => {
 

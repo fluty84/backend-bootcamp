@@ -5,7 +5,7 @@ import queue from "./src/queues/queue.js"
 
 import topUp from "./src/controllers/topUp.js"
 
-import { ValidationError, Validator } from "express-json-validator-middleware"
+import { Validator } from "express-json-validator-middleware"
 
 const validator = new Validator({ allErrors: true })
 const { validate } = validator
