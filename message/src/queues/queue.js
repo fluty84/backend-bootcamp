@@ -1,6 +1,7 @@
-import Queue from "bull";
-import http from "http"
-import sendMessage from "../controllers/sendMessage.js";
+import Queue from "bull"
+import sendMessage from "../controllers/sendMessage.js"
+
+export default (task, taskId) => {
 
 const toCredit = new Queue("creditQueue", {
     redis: { host: "localhost", port: 6379 }
@@ -14,7 +15,6 @@ const saveMessageQ = new Queue("saveMessage", {
     redis: { host: "localhost", port: 6379 }
 });
 
-export default (task, taskId) => {
 
    taskId && console.log("Processing on queue with id: ", taskId)
 
