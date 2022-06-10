@@ -16,7 +16,7 @@ export const hasMoney = async (message, MESSAGE_PRICE) => {
 
     } else {
         
-        message.status = "Not enought money"
+        message.status = "Not enough money"
 
         return message
     }

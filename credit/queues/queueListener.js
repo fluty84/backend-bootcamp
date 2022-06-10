@@ -1,8 +1,5 @@
 import Queue from "bull";
 import http from "http"
-import checkBudget from "../src/clients/checkBudget.js"
-import changeBudgetBy from "../src/clients/changeBudgetBy.js"
-import queueWorker from "./queueWorker.js";
 import { hasMoney } from "../utils/checkers.js";
 
 const MESSAGE_PRICE = 2
