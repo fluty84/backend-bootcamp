@@ -7,6 +7,8 @@ const server = `${process.env.MONGO_CREDIT}:27017`;
 
 const database = "cabify_bootcamp_credit";
 
+console.log(server, database)
+
 export default mongoose.createConnection(`mongodb://${server}/${database}`, {
   useNewUrlParser: true,
 });

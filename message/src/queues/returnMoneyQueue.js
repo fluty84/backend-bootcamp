@@ -1,4 +1,5 @@
 import Queue from "bull"
+import 'dotenv/config' 
 
 export default (number) => {
 

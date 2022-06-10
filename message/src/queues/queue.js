@@ -1,18 +1,19 @@
 import Queue from "bull"
 import sendMessage from "../controllers/sendMessage.js"
+import 'dotenv/config' 
 
 export default (task, taskId) => {
 
     const toCredit = new Queue("creditQueue", {
-        redis: { host: "localhost", port: 6379 }
+        redis: { host: process.env.REDISDOKER, port: 6379 }
     })
 
     const fromCredit = new Queue("listenCredit", {
-        redis: { host: "localhost", port: 6379 }
+        redis: { host: process.env.REDISDOKER, port: 6379 }
     })
 
     const saveMessageQ = new Queue("saveMessage", {
-        redis: { host: "localhost", port: 6379 }
+        redis: { host: process.env.REDISDOKER, port: 6379 }
     })
 
 

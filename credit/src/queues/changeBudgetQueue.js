@@ -1,10 +1,11 @@
 import Queue from "bull";
 import changeBudgetBy from "../controllers/changeBudgetBy.js";
+import 'dotenv/config' 
 
 export default () => {
 
     const changeBudget = new Queue("changeBudget", {
-        redis: { host: "localhost", port: 6379 }
+        redis: { host: process.env.REDISDOKER, port: 6379 }
     });
 
 
