@@ -1,14 +1,12 @@
 import http from "http"
 import saveMessage from "../clients/saveMessage.js"
+import returnMoneyQueue from "../queues/returnMoneyQueue.js"
 
 import 'dotenv/config'
-
 
 const MESSAGE_PRICE = 2
 
 export default async (body) => {
-
-  console.log(body, "On send message")
 
   if (body.status === "Not enough money") {
     await saveMessage({
@@ -20,6 +18,7 @@ export default async (body) => {
     return "Please Top Up"
   }
 
+  // Creating request to send to Message App
   const postOptions = {
     host: process.env.MESSAGEAPP,
     port: 3000,
@@ -44,15 +43,15 @@ export default async (body) => {
       })
       if (postRes.statusCode !== 200) {
         console.log('Error in the messageapp request')
-        return new Error('Error in the messageapp request');
+        throw new Error('Error in the messageapp request');
       }
-
+      
       console.log(postRes.body);
-
+      
     } catch (error) {
-      console.log(postRes, "RESPONSE")
-     // changeBudgetBy(MESSAGE_PRICE)
-      console.log(error.message, "Your money was returned")
+      
+      returnMoneyQueue({amount:MESSAGE_PRICE})
+
       console.log(`Internal server error: SERVICE ERROR ${error.message} Your money was returned`);
     }
   })
@@ -70,7 +69,7 @@ export default async (body) => {
       })
 
     } finally {
-      changeBudgetBy(MESSAGE_PRICE)
+      returnMoneyQueue({ amount: MESSAGE_PRICE })
       console.log("Internal server error: TIMEOUT");
     }
   });
@@ -85,7 +84,6 @@ export default async (body) => {
   }
 
   const payload = JSON.stringify(bodyString)
-  
   
   
   postReq.write(payload);

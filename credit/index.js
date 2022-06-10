@@ -2,7 +2,7 @@ import express from "express"
 import bodyParser from "body-parser"
 import 'dotenv/config'
 import queue from "./src/queues/queue.js"
-
+import changeBudgetQueue from "./src/queues/changeBudgetQueue.js"
 import topUp from "./src/controllers/topUp.js"
 
 import { Validator } from "express-json-validator-middleware"
@@ -34,6 +34,7 @@ app.post(
 )
 
 queue()
+changeBudgetQueue()
 
 // Create app port
 const port = 9017;

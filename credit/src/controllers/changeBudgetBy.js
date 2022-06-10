@@ -10,7 +10,6 @@ export default async (number) => {
     if(actualMoney === null){return `error actualmoney is ${actualMoney}`}
 
     try {
-        console.log(actualMoney.amount, "actual money", number, "number")
 
         if (actualMoney) {
 
