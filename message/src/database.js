@@ -10,7 +10,8 @@ function createConnection(name, server, database) {
     isActive: true,
     conn: mongoose.createConnection(`mongodb://${server}/${database}`, {
       useNewUrlParser: true,
-      autoReconnect: true
+      useUnifiedTopology: true,
+      //autoReconnect: true
     })
   };
 }

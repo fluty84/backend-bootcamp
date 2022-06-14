@@ -33,7 +33,7 @@
     "express-json-validator-middleware": "^2.2.1",
     "jest": "^28.1.0",
     "mongodb": "^3.1.8",
-    "mongoose": "^5.3.4",
+    "mongoose": "^6.3.8",
     "nodemon": "^1.18.4",
     "prettier": "^2.5.1",
     "uuid": "^8.3.2"

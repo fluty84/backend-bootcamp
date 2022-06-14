@@ -3,10 +3,8 @@ services:
   message1:
     build: message/
     restart: always
-    # ports:
-    #  - "9007:9007"
-    environment:
-      - MESSAGE_PORT=9007
+    ports:
+      - "9007:9007"
     links:
       - messageapp
       - mongodb_message
@@ -22,10 +20,8 @@ services:
   message2:
     build: message/
     restart: always
-    #ports:
-    #  - "9008:9007"
-    environment:
-      - MESSAGE_PORT=9008
+    ports:
+      - "9008:9007"
     links:
       - messageapp
       - mongodb_message
@@ -41,10 +37,8 @@ services:
   message3:
     build: message/
     restart: always
-    #ports:
-    #  - "9009:9007"
-    environment:
-      - MESSAGE_PORT=9009
+    ports:
+      - "9009:9007"
     links:
       - messageapp
       - mongodb_message
@@ -114,8 +108,6 @@ services:
     build: ./haproxy
     ports:
       - 8080:8080
-    expose:
-      - 80
     depends_on:
       - message1
       - message2
