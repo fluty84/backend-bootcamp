@@ -1,10 +1,11 @@
 version: "3"
 services:
   message1:
+    image: message1
     build: message/
     restart: always
     ports:
-      - "9007:9007"
+      - 80
     links:
       - messageapp
       - mongodb_message
@@ -15,13 +16,18 @@ services:
       - mongodb_message
       - replica_message
       - redis
+    deploy:
+      replicas: 4
     volumes:
       - "./message:/app"
-  message2:
-    build: message/
+    environment:
+      - SERVICE_NAME=service-v1
+  message_canary:
+    image: message_canary
+    build: message_v2/
     restart: always
     ports:
-      - "9008:9007"
+      - 80
     links:
       - messageapp
       - mongodb_message
@@ -32,26 +38,14 @@ services:
       - mongodb_message
       - replica_message
       - redis
+    deploy:
+      replicas: 4
     volumes:
       - "./message:/app"
-  message3:
-    build: message/
-    restart: always
-    ports:
-      - "9009:9007"
-    links:
-      - messageapp
-      - mongodb_message
-      - replica_message
-      - redis
-    depends_on:
-      - messageapp
-      - mongodb_message
-      - replica_message
-      - redis
-    volumes:
-      - "./message:/app"
+    environment:
+      - SERVICE_NAME=service-v2
   credit:
+    image: credit
     build: credit/
     restart: always
     ports:
@@ -70,7 +64,6 @@ services:
     image: cabify/backend-bootcamp-messageapp
     ports:
       - "3000:3000"
-
   mongodb_credit:
     image: mongo
     command: mongod --port 27017
@@ -85,7 +78,6 @@ services:
       - ./credit/data/replica:/credit/data/replica
     ports:
       - 27018:27018
-
   mongodb_message:
     image: mongo
     command: mongod --port 27027
@@ -104,14 +96,32 @@ services:
     image: redis
     ports:
       - 6379:6379
-  haproxy:
-    build: ./haproxy
-    ports:
-      - 8080:8080
+  #haproxy:
+    #build: ./haproxy
+    #ports:
+      #- 8080:8080
+    #depends_on:
+      #- message1
+  registrator:
+    image: gliderlabs/registrator
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock
+    command: -internal consul://consul:8500
     depends_on:
+      - consul
+    links:
+      - consul
+  consul: 
+    image: consul
+    command: "agent -server -bootstrap -ui -client=0.0.0.0 -bind='{{ GetPrivateIP }}'"
+  balancer:
+    image: haproxy:1.8-alpine
+    depends_on:
+      - registrator
       - message1
-      - message2
-      - message3
-
-        
-       
+    links:
+      - registrator
+    volumes: 
+      - ./haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg
+    ports:
+      - 48151:48151
