@@ -1,31 +1,18 @@
-import http from "http";
-import { v1 as uuid } from "uuid";
+const http = require("http");
+const uuid = require("uuid/v1");
+const logger = require("loglevel");
 
-import send_queue from "../queues/pub.js";
-import receive_queue from "../queues/sub.js";
-import saveMessage from "../clients/saveMessage.js";
+const send_queue = require("../queues/pub");
+const receive_queue = require("../queues/sub");
+const saveMessage = require("../clients/saveMessage");
 
-import Message from "../models/message.js";
+const Message = require("../models/message");
 
-import urls from "../urls.js";
+const breaker = require("../circuit-breaker");
 
-const random = (n) => Math.floor(Math.random() * Math.floor(n));
+const urls = require("../urls");
 
-receive_queue.process(async (job, done) => {
-  const messageData = { ...job.data };
-
-  if (job.data.status !== "OK") {
-    console.log("Credito insuficiente");
-
-    await saveMessage({
-      ...messageData,
-      status: "ERROR",
-    });
-
-    done();
-    return;
-  }
-
+function sendMessage(messageData, success, failed) {
   const postOptions = {
     host: urls.MESSAGEAPP_HOST,
     port: 3000,
@@ -34,70 +21,104 @@ receive_queue.process(async (job, done) => {
     json: true,
     headers: {
       "Content-Type": "application/json",
-      "Content-Length": Buffer.byteLength(JSON.stringify(messageData)),
-    },
+      // "Content-Length": Buffer.byteLength(JSON.stringify(messageData))
+    }
   };
 
-  const postReq = http.request(postOptions);
+  let postReq = http.request(postOptions);
 
-  console.log("Processing job");
-  console.log(messageData);
+  logger.info("Processing job with data: ", messageData);
 
-  postReq.on("response", async (postRes) => {
+  postReq.on("response", postRes => {
     if (postRes.statusCode === 200) {
-      await saveMessage({
-        ...messageData,
-        status: "OK",
-      });
+      saveMessage(Object.assign(messageData, { status: "OK" }), success);
     } else {
-      console.error("Error while sending message");
-      await saveMessage({
-        ...messageData,
-        status: "ERROR",
-      });
+      logger.error("Error while sending message");
+      saveMessage(Object.assign(messageData, { status: "ERROR" }), failed);
     }
-
-    done();
   });
 
-  postReq.setTimeout(random(6000));
-
-  postReq.on("timeout", async () => {
-    console.error("Timeout Exceeded!");
+  postReq.on("timeout", () => {
+    logger.error("Timeout Exceeded!");
     postReq.abort();
 
-    await saveMessage({
-      ...messageData,
-      status: "TIMEOUT",
-    });
-
-    done();
+    saveMessage(Object.assign(messageData, { status: "TIMEOUT" }), failed);
   });
 
-  postReq.on("error", () => {});
+  postReq.on("error", () => {
+    logger.error("Connection error!");
+    failed();
+  });
 
   postReq.write(JSON.stringify(messageData));
   postReq.end();
+}
+
+function fallback(messageData, done) {
+  logger.error("Unable to attempt to send message: circuit open");
+  saveMessage(Object.assign(messageData, { status: "ERROR" }), done);
+}
+
+receive_queue.process(function(job, done) {
+  if (job.data.status == "OK") {
+    const messageData = Object.assign({}, job.data);
+    breaker.run(
+      (success, failed) => {sendMessage(messageData, success, failed); done();},
+      () => fallback(messageData, done)
+    );
+  } else {
+    logger.error("Credito insuficiente");
+    const messageData = Object.assign({}, job.data);
+    saveMessage(Object.assign(messageData, { status: "ERROR" }), done);
+  }
 });
 
-export default async function addJob(jobParams) {
-  const messageId = uuid();
+function processingMessage(messageParams) {
+  return new Promise((ok, ko) => {
+    saveMessage(messageParams, err => {
+      if (err) {
+        return ko(err);
+      }
+      return ok();
+    });
+  });
+}
 
-  const messageParams = {
-    ...jobParams,
-    _id: messageId,
-    status: "QUEUED",
-  };
+let paused = false;
+const jobsToPause = 10;
+const jobsToResume = 5;
+
+module.exports = function addJob(jobParams) {
+  const messageId = uuid();
+  const messageParams = Object.assign(
+    {},
+    jobParams,
+    { _id: messageId },
+    { status: "QUEUED" }
+  );
 
   const jobOpts = {
-    delay: 2000,
+    delay: 2000
   };
 
-  await saveMessage(messageParams);
+  send_queue.count()
+    .then((n) => {
+      if (paused && n <= jobsToResume) paused = false;
+      else if (!paused && n >= jobsToPause) paused = true;
+    });
+  if (paused) return Promise.reject('Queue paused due to long queue');
 
-  const MessageModel = Message();
-  const message = new MessageModel(messageParams);
-  await send_queue.add(message, jobOpts);
-
-  return messageId;
+  return processingMessage(messageParams)
+    .then(() => {
+      const MessageModel = Message();
+      let message = new MessageModel(messageParams);
+      return send_queue.add(message, jobOpts);
+    })
+    .then(() => {
+      return messageId;
+    })
+    .catch((error) => {
+      logger.error(error)
+      return error
+    });
 }

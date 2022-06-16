@@ -1,7 +1,11 @@
-import getMessages from "../clients/getMessages.js";
+const getMessages = require("../clients/getMessages");
+const promCounter = require("../../promCounter.js")
 
-export default async (req, res) => {
-  const messages = await getMessages();
+const counter = promCounter("getMessageExample", "getMessageExample")
 
-  res.json(messages);
+module.exports = function (req, res) {
+  getMessages().then(messages => {
+    counter.inc({ code: 201 })
+    res.json(messages);
+  });
 };

@@ -1,11 +1,9 @@
 version: "3"
 services:
-  message1:
-    image: message1
+  message:
     build: message/
-    restart: always
     ports:
-      - 80
+      - "9010:9010"
     links:
       - messageapp
       - mongodb_message
@@ -16,40 +14,10 @@ services:
       - mongodb_message
       - replica_message
       - redis
-    deploy:
-      replicas: 4
-    volumes:
-      - "./message:/app"
-    environment:
-      - SERVICE_NAME=service-v1
-  message_canary:
-    image: message_canary
-    build: message_v2/
-    restart: always
-    ports:
-      - 80
-    links:
-      - messageapp
-      - mongodb_message
-      - replica_message
-      - redis
-    depends_on:
-      - messageapp
-      - mongodb_message
-      - replica_message
-      - redis
-    deploy:
-      replicas: 4
-    volumes:
-      - "./message:/app"
-    environment:
-      - SERVICE_NAME=service-v2
   credit:
-    image: credit
     build: credit/
-    restart: always
     ports:
-      - "9017:9017"
+      - "9020:9020"
     links:
       - mongodb_credit
       - replica_credit
@@ -58,12 +26,11 @@ services:
       - mongodb_credit
       - replica_credit
       - redis
-    volumes:
-      - "./credit:/app"
   messageapp:
-    image: cabify/backend-bootcamp-messageapp
+    image: cabify/backend-bootcamp-messageapp:exercise10
     ports:
       - "3000:3000"
+
   mongodb_credit:
     image: mongo
     command: mongod --port 27017
@@ -78,6 +45,7 @@ services:
       - ./credit/data/replica:/credit/data/replica
     ports:
       - 27018:27018
+
   mongodb_message:
     image: mongo
     command: mongod --port 27027
@@ -92,36 +60,36 @@ services:
       - ./message/data/replica:/message/data/replica
     ports:
       - 27028:27028
+
   redis:
     image: redis
     ports:
       - 6379:6379
-  #haproxy:
-    #build: ./haproxy
-    #ports:
-      #- 8080:8080
-    #depends_on:
-      #- message1
-  registrator:
-    image: gliderlabs/registrator
+  
+  prometheus:
+    image: prom/prometheus:latest
     volumes:
-      - /var/run/docker.sock:/tmp/docker.sock
-    command: -internal consul://consul:8500
-    depends_on:
-      - consul
-    links:
-      - consul
-  consul: 
-    image: consul
-    command: "agent -server -bootstrap -ui -client=0.0.0.0 -bind='{{ GetPrivateIP }}'"
-  balancer:
-    image: haproxy:1.8-alpine
-    depends_on:
-      - registrator
-      - message1
-    links:
-      - registrator
-    volumes: 
-      - ./haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg
+      - prometheus_data:/prometheus
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
     ports:
-      - 48151:48151
+      - '9090:9090'
+  
+  grafana:
+    image: grafana/grafana:latest
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./grafana/provisioning:/etc/grafana/provisioning
+      - ./grafana/config.ini:/etc/grafana/config.ini
+      - ./grafana/dashboards:/var/lib/grafana/dashboards
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_SECURITY_ADMIN_USER=admin
+    depends_on:
+      - prometheus
+    ports:
+      - '3001:3000'
+volumes:
+  prometheus_data: {}
+  grafana_data: {}
